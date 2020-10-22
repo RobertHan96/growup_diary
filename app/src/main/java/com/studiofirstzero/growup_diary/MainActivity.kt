@@ -6,13 +6,25 @@ import android.util.Log
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : BaseActivity() {
     var bt = BluetoothSPP(mContext)
 
     override fun setupEvents() {
-
+        find_bt_device_button.setOnClickListener {
+//          장치 연결 여부 확인 => 장치 연결 => 센서 값 계속해서 전송 => 값 옆의 버튼 누르면 해당 값 저장(파이버에이스)
+            onStart()
+        }
+        write_diary_button.setOnClickListener {
+            val writeDiary = Intent( mContext, WriteDiary::class.java)
+            startActivity(writeDiary)
+        }
+        grwonup_timeline_button.setOnClickListener {
+            val timeLine = Intent( mContext, TimeLine::class.java)
+            startActivity(timeLine)
+        }
     }
 
     override fun setValues() {
@@ -21,7 +33,6 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        onStart()
 
     }
 
