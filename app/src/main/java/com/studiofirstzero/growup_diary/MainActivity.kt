@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -54,6 +55,8 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setValues() {
+        val imgUrl = "https://ww.namu.la/s/05ec98b51857397ed529d9ddda765c086dca98a7173574e11dee206b99a0e0538e91a96918ab27da1d95f984087a9b172eb9bdfd1b5ad134f0d570b52fc3fde6c30d473d6b9a4c0cf5dd637b3b076156d115b0e6288d4f546e5584f778c6020d"
+        Glide.with(mContext).load(imgUrl).into(test_img)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
