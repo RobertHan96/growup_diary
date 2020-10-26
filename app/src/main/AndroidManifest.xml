@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PostDetail"></activity>
+        <activity android:name=".SignUp"></activity>
+        <activity android:name=".Login" />
+        <activity android:name=".PostDetail" />
         <activity android:name=".TimeLine" />
         <activity android:name=".WriteDiary" />
         <activity android:name=".MainActivity">
