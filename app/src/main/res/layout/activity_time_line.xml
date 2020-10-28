@@ -7,4 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".TimeLine">
 
+    <ListView
+        android:id="@+id/measureListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </LinearLayout>
+
