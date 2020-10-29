@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import android.widget.Toast.makeText
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
-import app.akexorcist.bluetotohspp.library.DeviceList
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -41,7 +39,7 @@ class MainActivity : BaseActivity() {
                 .addOnSuccessListener { documentReference ->
                     Log.d("log", "DocumentSnapshot added with ID: " + documentReference.id) }
                 .addOnFailureListener { e -> Log.w("log", "Error adding document", e) }
-            val writeDiary = Intent( mContext, WriteDiary::class.java)
+            val writeDiary = Intent( mContext, WriteDiaryActivity::class.java)
             startActivity(writeDiary)
         }
 
@@ -57,18 +55,18 @@ class MainActivity : BaseActivity() {
                         Log.w("log", "Error getting documents.", task.exception)
                     }
                 }
-            val timeLine = Intent( mContext, TimeLine::class.java)
+            val timeLine = Intent( mContext, TimeLineActivity::class.java)
             startActivity(timeLine)
         }
 
         sign_up_btn.setOnClickListener {
-            val signUP = Intent( mContext, SignUp::class.java)
+            val signUP = Intent( mContext, SignUpActivity::class.java)
             startActivity(signUP)
 
         }
 
         login_btn.setOnClickListener {
-            val login = Intent( mContext, Login::class.java)
+            val login = Intent( mContext, LoginActivity::class.java)
             startActivity(login)
         }
     }
@@ -94,7 +92,7 @@ class MainActivity : BaseActivity() {
 //            bt.autoConnect("HC-06")
 
 //            Toast.makeText(mContext, "블루투스 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show()
-            val measuere = Intent( mContext, Login::class.java)
+            val measuere = Intent( mContext, LoginActivity::class.java)
             bt.startService(BluetoothState.DEVICE_OTHER)
 //            val intent = Intent(mContext, DeviceList::class.java)
 //            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE)

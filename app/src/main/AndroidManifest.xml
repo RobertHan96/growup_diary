@@ -14,11 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MeasureActivity"></activity>
-        <activity android:name=".SignUp" />
-        <activity android:name=".Login" />
-        <activity android:name=".PostDetail" />
-        <activity android:name=".TimeLine" />
-        <activity android:name=".WriteDiary" />
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".PostDetailActivity" />
+        <activity android:name=".TimeLineActivity" />
+        <activity android:name=".WriteDiaryActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

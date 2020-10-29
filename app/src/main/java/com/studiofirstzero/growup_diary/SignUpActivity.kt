@@ -3,7 +3,7 @@ package com.studiofirstzero.growup_diary
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class Login : BaseActivity() {
+class SignUpActivity : BaseActivity() {
     override fun setupEvents() {
         TODO("Not yet implemented")
     }
@@ -14,6 +14,8 @@ class Login : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_sign_up)
+        setupEvents()
+        setValues()
     }
 }
