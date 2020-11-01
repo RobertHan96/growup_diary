@@ -4,29 +4,67 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import android.widget.Toast.makeText
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
+import app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener
 import app.akexorcist.bluetotohspp.library.BluetoothState
+import app.akexorcist.bluetotohspp.library.DeviceList
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : BaseActivity() {
-    var bt = BluetoothSPP(mContext)
+    lateinit var bt : BluetoothSPP
     var db = FirebaseFirestore.getInstance()
     val BLUETOOTH_REQ = 1000
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        bt = BluetoothSPP(mContext)
+        setValues()
+        setupEvents()
+
+        if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
+            Toast.makeText(mContext, "Bluetooth is not available", LENGTH_SHORT).show();
+            finish();
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bt.stopService()
+    }
     override fun setupEvents() {
-        bt.setOnDataReceivedListener { data, message ->
-            makeText(mContext,"데이터 : ${data} / 메세지 : ${message}", LENGTH_SHORT).show()
-        }
-
         find_bt_device_btn.setOnClickListener {
-
-//          장치 연결 여부 확인 => 장치 연결 => 센서 값 계속해서 전송 => 값 옆의 버튼 누르면 해당 값 저장(파이버에이스)
-//            onStart()
-
+            if (bt.serviceState == BluetoothState.STATE_CONNECTED) {
+                bt.disconnect()
+            } else {
+                val intent = Intent(mContext, DeviceList::class.java)
+                startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE)
+            }
         }
+
+        bt.setOnDataReceivedListener { data, message ->
+            Toast.makeText(mContext, "vlaue ${message}", LENGTH_SHORT).show();
+        }
+
+
+        bt.setBluetoothConnectionListener(object : BluetoothConnectionListener {
+            override fun onDeviceConnected(name: String, address: String) {
+                Toast.makeText(mContext, "측정기와 연결되었습니다.", LENGTH_SHORT).show();
+            }
+
+            override fun onDeviceDisconnected() {
+                Toast.makeText(mContext, "측정기와 연결이 해제되었습니다.", LENGTH_SHORT).show();
+            }
+
+            override fun onDeviceConnectionFailed() {
+                Toast.makeText(mContext, "연결된 측정기가 없습니다, 연결 버튼을 통해 연결해주세요.", LENGTH_SHORT).show();
+            }
+        })
 
         write_diary_btn.setOnClickListener {
             val user: MutableMap<String, Any> = HashMap()
@@ -76,47 +114,33 @@ class MainActivity : BaseActivity() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setValues()
-        setupEvents()
-    }
-
     override fun onStart() {
         super.onStart()
         if (!bt.isBluetoothEnabled ) {
             Log.d("log", "블루투스 켜짐, 데이터 수신 시작...")
+            val intent = Intent(mContext, DeviceList::class.java)
+            startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT)
         } else {
             Log.d("log", "블루투스 꺼짐")
-//            bt.autoConnect("HC-06")
-
-//            Toast.makeText(mContext, "블루투스 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show()
-            val measuere = Intent( mContext, LoginActivity::class.java)
-            bt.startService(BluetoothState.DEVICE_OTHER)
-//            val intent = Intent(mContext, DeviceList::class.java)
-//            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE)
-//            onActivityResult(BLUETOOTH_REQ, Activity.RESULT_OK, measuere)
-//            bt.send("Message", true)
-//            bt.setOnDataReceivedListener { data, message ->
-//                Log.d("log", "데이터 : ${data} / 메세지 : ${message}")
-//            }
-
+            if (!bt.isServiceAvailable) {
+                bt.setupService()
+                bt.startService(BluetoothState.DEVICE_OTHER)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
-            if (resultCode == BLUETOOTH_REQ) bt.connect(data)
+            if (resultCode == Activity.RESULT_OK) {
+                bt.connect(data)
+            }
         } else if (requestCode == BluetoothState.REQUEST_ENABLE_BT) {
             if (resultCode == Activity.RESULT_OK) {
                 bt.setupService()
                 bt.startService(BluetoothState.DEVICE_OTHER)
-                bt.setupService()
-//                setup()
             } else {
-                // Do something if user doesn't choose any device (Pressed back)
+                Toast.makeText(mContext, "Bluetooth is not available", LENGTH_SHORT).show();
             }
         }
     }
