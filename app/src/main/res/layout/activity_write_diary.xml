@@ -42,6 +42,13 @@
         android:layout_height="0dp"
         android:layout_weight="2"/>
 
+    <TextView
+        android:id="@+id/measuredValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="측정값" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -66,7 +73,7 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:text="측정값"/>
+            android:text="측정하기"/>
 
         <Button
             android:id="@+id/openGalleryBtn"
