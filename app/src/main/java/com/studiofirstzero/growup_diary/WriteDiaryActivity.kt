@@ -9,6 +9,7 @@ import android.widget.Toast
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.android.synthetic.main.activity_write_diary.*
 
 // 사진과 함께 글을 작성하는 곳, 게시판 형태로 작성
@@ -32,9 +33,10 @@ class WriteDiaryActivity : BaseActivity() {
 
     override fun setupEvents() {
         writePostBtn.setOnClickListener {
-            val postDetailActivity = Intent( mContext, PostDetailActivity::class.java)
-            startActivity(postDetailActivity)
-
+//            val postDetailActivity = Intent( mContext, PostDetailActivity::class.java)
+//            startActivity(postDetailActivity)
+            val loginActivity = Intent( mContext, LoginActivity::class.java)
+            startActivity(loginActivity)
         }
 
         getMeasureValuesBtn.setOnClickListener {
