@@ -30,16 +30,6 @@ class MainActivity : BaseActivity() {
         }
 
         write_diary_btn.setOnClickListener {
-            val user: MutableMap<String, Any> = HashMap()
-            user["first"] = "Alan"
-            user["middle"] = "Mathison"
-            user["last"] = "Turing"
-            user["born"] = 1912
-            db.collection("users")
-                .add(user)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("log", "DocumentSnapshot added with ID: " + documentReference.id) }
-                .addOnFailureListener { e -> Log.w("log", "Error adding document", e) }
             val writeDiary = Intent( mContext, WriteDiaryActivity::class.java)
             startActivity(writeDiary)
         }
