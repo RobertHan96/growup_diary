@@ -9,7 +9,10 @@ import android.widget.Toast
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_write_diary.*
 
 // 사진과 함께 글을 작성하는 곳, 게시판 형태로 작성
@@ -18,6 +21,8 @@ import kotlinx.android.synthetic.main.activity_write_diary.*
 
 class WriteDiaryActivity : BaseActivity() {
     lateinit var bt : BluetoothSPP
+    private lateinit var auth: FirebaseAuth
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,10 +38,13 @@ class WriteDiaryActivity : BaseActivity() {
 
     override fun setupEvents() {
         writePostBtn.setOnClickListener {
-//            val postDetailActivity = Intent( mContext, PostDetailActivity::class.java)
-//            startActivity(postDetailActivity)
-            val loginActivity = Intent( mContext, LoginActivity::class.java)
-            startActivity(loginActivity)
+            val currentUser = auth.currentUser
+            if (currentUser == null) {
+                val loginActivity = Intent( mContext, LoginActivity::class.java)
+                startActivity(loginActivity)
+            } else {
+                postDiary()
+            }
         }
 
         getMeasureValuesBtn.setOnClickListener {
@@ -75,7 +83,12 @@ class WriteDiaryActivity : BaseActivity() {
             Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
             finish();
         }
-
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
+        auth = FirebaseAuth.getInstance()
     }
 
     override fun onStart() {
@@ -107,6 +120,11 @@ class WriteDiaryActivity : BaseActivity() {
                 Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private fun postDiary() {
+        Log.d("log", "게시글 작성 완료 기능 구현 예정")
+        finish()
     }
 
 }

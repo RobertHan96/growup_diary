@@ -26,15 +26,8 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
-        auth = FirebaseAuth.getInstance()
-
-        setupEvents()
         setValues()
+        setupEvents()
     }
 
     override fun setupEvents() {
@@ -52,7 +45,12 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun setValues() {
-
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
+        auth = FirebaseAuth.getInstance()
     }
 
     override fun onStart() {
@@ -106,6 +104,7 @@ class LoginActivity : BaseActivity() {
             loginBtn.isEnabled = false
             logoutBtn.isEnabled = true
             revokeBtn.isEnabled = true
+        } else if (user != null && isSignupAlready(user) == false) {
             registerUserInfo(user)
         } else {
             Toast.makeText(mContext, "기능 사용을 위해 로그인해주세요.", Toast.LENGTH_SHORT).show()
@@ -117,14 +116,35 @@ class LoginActivity : BaseActivity() {
     private fun registerUserInfo(user : FirebaseUser?) {
         user.let {
             val user: MutableMap<String, Any> = HashMap()
-            user["name"] =  it?.displayName.toString()
-            user["id"] = it?.email.toString()
-            db.collection("users")
-                .add(user)
+            val name = it?.displayName.toString()
+            val id = it?.email.toString()
+            user["name"] =  name
+            user["id"] = id
+            db.collection("users").document(id).set(user)
                 .addOnSuccessListener { documentReference ->
-                    Log.d("log", "DocumentSnapshot added with ID: " + documentReference.id) }
+                    Log.d("log", "DocumentSnapshot added with ID: " + id) }
                 .addOnFailureListener { e -> Log.w("log", "Error adding document", e) }
         }
+
+    }
+
+    private fun isSignupAlready(user : FirebaseUser?) : Boolean {
+        val docRef = db.collection("users").document(user?.email.toString())
+        var isSignupAlready = false
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d("log", "DocumentSnapshot data: ${document.data}")
+                    isSignupAlready = true
+                } else {
+                    Log.d("log", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("log", "get failed with ", exception)
+            }
+
+        return isSignupAlready
     }
 
     private fun signUp() {
@@ -133,17 +153,26 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun signOut() {
+        val user = FirebaseAuth.getInstance().currentUser
         auth.signOut()
+        finish()
     }
 
     private fun revokeUser() {
         val user = FirebaseAuth.getInstance().currentUser
+        val id = user?.email.toString()
         user?.delete()
             ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d("log", "User account deleted.")
+                    Log.d("log", "User account deleted. ${id}")
             }
         }
+
+        db.collection("users").document(id)
+            .delete()
+            .addOnSuccessListener { Log.d("log", "DocumentSnapshot successfully deleted!") }
+            .addOnFailureListener { e -> Log.w("log", "Error deleting document", e) }
+        finish()
     }
 
 }
