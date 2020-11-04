@@ -50,16 +50,11 @@ class MainActivity : BaseActivity() {
             startActivity(timeLine)
         }
 
-        sign_up_btn.setOnClickListener {
-            val signUP = Intent( mContext, SignUpActivity::class.java)
+        mypageBtn.setOnClickListener {
+            val signUP = Intent( mContext, LoginActivity::class.java)
             startActivity(signUP)
-
         }
 
-        login_btn.setOnClickListener {
-            val login = Intent( mContext, LoginActivity::class.java)
-            startActivity(login)
-        }
     }
 
     override fun setValues() {
