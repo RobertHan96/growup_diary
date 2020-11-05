@@ -43,6 +43,7 @@ class WriteDiaryActivity : BaseActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var storage : FirebaseStorage
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var userID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,10 +79,9 @@ class WriteDiaryActivity : BaseActivity() {
                 val loginActivity = Intent(mContext, LoginActivity::class.java)
                 startActivity(loginActivity)
             } else {
-                Log.d("log", "test시작")
+                userID = auth.currentUser?.email.toString()
                 val postImage = findViewById<ImageView>(R.id.postImage)
                 uploadImageAndPost(postImage)
-                Log.d("log", "test끝")
             }
         }
 
@@ -172,35 +172,40 @@ class WriteDiaryActivity : BaseActivity() {
 
         var uploadTask = imageRef.putBytes(data)
         uploadTask.addOnFailureListener {
-            Log.d("log", "포스트 첨부이지 업로드 중 오류 발생 ${it}")
+            Log.d("log", "포스트 첨부이미지 업로드 중 오류 발생 ${it}")
         }.addOnSuccessListener { taskSnapshot ->
-            val imageUrl = taskSnapshot.storage.downloadUrl.toString()
-            Log.d("log", "이미지 업로드 성공 : ${imageUrl}}")
-            val post = getPostInfo(imageUrl)
-            postDiary(post)
+            val imageUrl = imageRef.downloadUrl.toString()
         }
+
+        val urlTask = uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            imageRef.downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val downloadUri = task.result
+                val post = getPostInfo(downloadUri.toString())
+                postDiary(post)
+
+                Log.d("log", "이미지 업로드 성공 : ${downloadUri}}")
+            } else {
+                Log.d("log", "포스트 첨부이미지 업로드 중 오류 발생")
+            }
+        }
+
     }
 
-    // id null, measue value null 문제 해결 필요
     private fun getPostInfo(imageUrl : String) : Post {
-        val userId = getUserName()
-//        val measureValueFloat = measuredValueText.text.toString().toFloat()
-//        val measuereValue = (measureValueFloat * 10).roundToInt()
+        val measuereValue = measuredValueText.text.toString().toFloat()
         val title = titleEdt.text.toString()
         val content = contentEdt.text.toString()
         val imgUrl = imageUrl
         val createdTime = FieldValue.serverTimestamp()
-        val post = Post(userId, 123.45 ,title, content, imgUrl, createdTime)
+        val post = Post(userID, measuereValue ,title, content, imgUrl, createdTime)
         return  post
-    }
-
-    private fun getUserName() : String {
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            return currentUser?.displayName.toString()
-        } else {
-            return "1"
-        }
     }
 
     private fun postDiary(post : Post) {
