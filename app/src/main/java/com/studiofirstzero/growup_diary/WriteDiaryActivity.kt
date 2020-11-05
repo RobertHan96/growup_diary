@@ -2,25 +2,35 @@ package com.studiofirstzero.growup_diary
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
+import com.bumptech.glide.Glide
+import com.esafirm.imagepicker.features.ImagePicker
+import com.esafirm.imagepicker.features.ReturnMode
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.studiofirstzero.growup_diary.datas.City
+import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_write_diary.*
-
-// 사진과 함께 글을 작성하는 곳, 게시판 형태로 작성
-// 사진 촬영, 첨부 라이브러리 찾아보기
-// 작성 내용 : 제목, 내용, 사진 1장, 키 (다이얼로그 창으로 구현 - 파이버에이스와 연동)
+import kotlin.math.roundToInt
 
 class WriteDiaryActivity : BaseActivity() {
-    lateinit var bt : BluetoothSPP
+    private lateinit var bt : BluetoothSPP
+    var db = FirebaseFirestore.getInstance()
+    private val REQUEST_CODE = 1001
     private lateinit var auth: FirebaseAuth
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -40,7 +50,7 @@ class WriteDiaryActivity : BaseActivity() {
         writePostBtn.setOnClickListener {
             val currentUser = auth.currentUser
             if (currentUser == null) {
-                val loginActivity = Intent( mContext, LoginActivity::class.java)
+                val loginActivity = Intent(mContext, LoginActivity::class.java)
                 startActivity(loginActivity)
             } else {
                 postDiary()
@@ -54,6 +64,13 @@ class WriteDiaryActivity : BaseActivity() {
                 val intent = Intent(mContext, DeviceList::class.java)
                 startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE)
             }
+        }
+
+        openGalleryBtn.setOnClickListener{
+            val myIntent = Intent(Intent.ACTION_PICK)
+            myIntent.setType("image/*") //가져올 이미지 파일들의 확장자 결정
+            myIntent.setType(MediaStore.Images.Media.CONTENT_TYPE)
+            startActivityForResult(myIntent, REQUEST_CODE)
         }
 
         bt.setOnDataReceivedListener { data, message ->
@@ -119,12 +136,50 @@ class WriteDiaryActivity : BaseActivity() {
             } else {
                 Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                val postImageView = findViewById<ImageView>(R.id.postImage)
+                Glide.with(mContext).load(data?.data).into(postImageView)
+            }
         }
+
     }
 
     private fun postDiary() {
-        Log.d("log", "게시글 작성 완료 기능 구현 예정")
+        val tableName = "posts"
+        val userId = getUserName()
+        val measureValueFloat = measuredValueText.text.toString().toFloat()
+        val measuereValue = (measureValueFloat * 10).roundToInt()
+        val title = titleEdt.text.toString()
+        val content = contentEdt.text.toString()
+        val imgUrl = "test"
+        val createdTime = FieldValue.serverTimestamp()
+        val post = City(userId, measuereValue ,title, content, imgUrl, createdTime)
+
+        db.collection(tableName)
+            .add(post)
+            .addOnSuccessListener { documentReference ->
+                Log.d("log", "DocumentSnapshot written with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.d("log", "Error adding document", e)
+            }
+
         finish()
     }
 
+    private fun getUserName() : String {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            return auth.currentUser?.displayName.toString()
+        } else {
+            return ""
+        }
+    }
+
+    private fun getImageBytes() {
+
+    }
+
 }
+
