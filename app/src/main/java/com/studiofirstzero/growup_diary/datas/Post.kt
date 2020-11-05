@@ -2,7 +2,7 @@ package com.studiofirstzero.growup_diary.datas
 
 import com.google.firebase.firestore.FieldValue
 
-data class City(
+data class Post(
     val id: String? = null,
     val measures_value : Number? = null,
     val title: String? = null,

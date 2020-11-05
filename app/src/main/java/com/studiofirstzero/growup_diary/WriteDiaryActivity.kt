@@ -2,7 +2,11 @@ package com.studiofirstzero.growup_diary
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.media.Image
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,8 +17,6 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import app.akexorcist.bluetotohspp.library.DeviceList
 import com.bumptech.glide.Glide
-import com.esafirm.imagepicker.features.ImagePicker
-import com.esafirm.imagepicker.features.ReturnMode
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -22,9 +24,16 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.studiofirstzero.growup_diary.datas.City
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
+import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_write_diary.*
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.log
 import kotlin.math.roundToInt
 
 class WriteDiaryActivity : BaseActivity() {
@@ -32,6 +41,7 @@ class WriteDiaryActivity : BaseActivity() {
     var db = FirebaseFirestore.getInstance()
     private val REQUEST_CODE = 1001
     private lateinit var auth: FirebaseAuth
+    private lateinit var storage : FirebaseStorage
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +56,21 @@ class WriteDiaryActivity : BaseActivity() {
         bt.stopService()
     }
 
+    override fun setValues() {
+        bt = BluetoothSPP(mContext)
+        if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
+            Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
+        auth = FirebaseAuth.getInstance()
+        storage = Firebase.storage
+    }
+
     override fun setupEvents() {
         writePostBtn.setOnClickListener {
             val currentUser = auth.currentUser
@@ -53,7 +78,10 @@ class WriteDiaryActivity : BaseActivity() {
                 val loginActivity = Intent(mContext, LoginActivity::class.java)
                 startActivity(loginActivity)
             } else {
-                postDiary()
+                Log.d("log", "test시작")
+                val postImage = findViewById<ImageView>(R.id.postImage)
+                uploadImageAndPost(postImage)
+                Log.d("log", "test끝")
             }
         }
 
@@ -94,20 +122,6 @@ class WriteDiaryActivity : BaseActivity() {
 
     }
 
-    override fun setValues() {
-        bt = BluetoothSPP(mContext)
-        if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
-            Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
-        auth = FirebaseAuth.getInstance()
-    }
-
     override fun onStart() {
         super.onStart()
         if (!bt.isBluetoothEnabled ) {
@@ -145,17 +159,52 @@ class WriteDiaryActivity : BaseActivity() {
 
     }
 
-    private fun postDiary() {
-        val tableName = "posts"
+    private fun uploadImageAndPost(imageView : ImageView) {
+        imageView.isDrawingCacheEnabled = true
+        imageView.buildDrawingCache()
+        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val data = baos.toByteArray()
+        var timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val fileName = "IMAGE_${timeStamp}.png"
+        val imageRef = storage.reference.child("postImages").child(fileName)
+
+        var uploadTask = imageRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            Log.d("log", "포스트 첨부이지 업로드 중 오류 발생 ${it}")
+        }.addOnSuccessListener { taskSnapshot ->
+            val imageUrl = taskSnapshot.storage.downloadUrl.toString()
+            Log.d("log", "이미지 업로드 성공 : ${imageUrl}}")
+            val post = getPostInfo(imageUrl)
+            postDiary(post)
+        }
+    }
+
+    // id null, measue value null 문제 해결 필요
+    private fun getPostInfo(imageUrl : String) : Post {
         val userId = getUserName()
-        val measureValueFloat = measuredValueText.text.toString().toFloat()
-        val measuereValue = (measureValueFloat * 10).roundToInt()
+//        val measureValueFloat = measuredValueText.text.toString().toFloat()
+//        val measuereValue = (measureValueFloat * 10).roundToInt()
         val title = titleEdt.text.toString()
         val content = contentEdt.text.toString()
-        val imgUrl = "test"
+        val imgUrl = imageUrl
         val createdTime = FieldValue.serverTimestamp()
-        val post = City(userId, measuereValue ,title, content, imgUrl, createdTime)
+        val post = Post(userId, 123.45 ,title, content, imgUrl, createdTime)
+        return  post
+    }
 
+    private fun getUserName() : String {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            return currentUser?.displayName.toString()
+        } else {
+            return "1"
+        }
+    }
+
+    private fun postDiary(post : Post) {
+        val tableName = "posts"
         db.collection(tableName)
             .add(post)
             .addOnSuccessListener { documentReference ->
@@ -166,19 +215,6 @@ class WriteDiaryActivity : BaseActivity() {
             }
 
         finish()
-    }
-
-    private fun getUserName() : String {
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            return auth.currentUser?.displayName.toString()
-        } else {
-            return ""
-        }
-    }
-
-    private fun getImageBytes() {
-
     }
 
 }
