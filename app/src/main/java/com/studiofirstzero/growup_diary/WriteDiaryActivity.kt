@@ -3,11 +3,7 @@ package com.studiofirstzero.growup_diary
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -20,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,13 +23,10 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.studiofirstzero.growup_diary.datas.Post
-import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_write_diary.*
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.log
-import kotlin.math.roundToInt
 
 class WriteDiaryActivity : BaseActivity() {
     private lateinit var bt : BluetoothSPP
@@ -166,7 +158,7 @@ class WriteDiaryActivity : BaseActivity() {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
         val data = baos.toByteArray()
-        var timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp = getCurrentTime()
         val fileName = "IMAGE_${timeStamp}.png"
         val imageRef = storage.reference.child("postImages").child(fileName)
 
@@ -198,13 +190,20 @@ class WriteDiaryActivity : BaseActivity() {
 
     }
 
+    private fun getCurrentTime() : String {
+        val currentDateTime = Calendar.getInstance().time
+        var dateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA).format(currentDateTime)
+        return dateFormat
+    }
+
     private fun getPostInfo(imageUrl : String) : Post {
         val measuereValue = measuredValueText.text.toString().toFloat()
         val title = titleEdt.text.toString()
         val content = contentEdt.text.toString()
         val imgUrl = imageUrl
-        val createdTime = FieldValue.serverTimestamp()
-        val post = Post(userID, measuereValue ,title, content, imgUrl, createdTime)
+//        val createdAt = FieldValue.serverTimestamp()
+        val createdAt = getCurrentTime()
+        val post = Post(userID, measuereValue ,title, content, imgUrl, createdAt)
         return  post
     }
 

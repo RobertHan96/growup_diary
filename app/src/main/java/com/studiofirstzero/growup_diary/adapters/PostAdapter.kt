@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.studiofirstzero.growup_diary.R
-import com.studiofirstzero.growup_diary.datas.Measure
+import com.studiofirstzero.growup_diary.datas.Post
 
-class MeasureAdapter (context : Context, resID:Int, list:ArrayList<Measure>)  : ArrayAdapter<Measure>(context, resID, list)  {
+class PostAdapter(context: Context, resID:Int, list: ArrayList<Post>)  : ArrayAdapter<Post>(context, resID, list)  {
     val mContext = context
     val mList = list
     val inf = LayoutInflater.from(mContext)
@@ -19,17 +19,19 @@ class MeasureAdapter (context : Context, resID:Int, list:ArrayList<Measure>)  : 
         tempRow.let {
 
         }.let {
-            tempRow = inf.inflate(R.layout.measure_list_item, null)
+            tempRow = inf.inflate(R.layout.post_list_item, null)
         }
 
         val row = tempRow!!
         val data = mList.get(position)
 
-        val measureDate = row.findViewById<TextView>(R.id.measureDate)
-        val measureValue = row.findViewById<TextView>(R.id.measureValue)
+        val createdAt = row.findViewById<TextView>(R.id.createdAtText)
+        val title = row.findViewById<TextView>(R.id.titleText)
+        val measureValue = row.findViewById<TextView>(R.id.measureValueText)
 
-        measureDate.text = data.measureDate
+        title.text = data.title
         measureValue.text = data.measureValue.toString()
+        createdAt.text = data.createdAt.toString()
         return  row
     }
 

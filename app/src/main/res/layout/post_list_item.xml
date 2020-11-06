@@ -13,14 +13,25 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/measureDate"
+            android:id="@+id/createdAtText"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
             android:text="2020-10-10"/>
 
         <TextView
-            android:id="@+id/measureValue"
+            android:id="@+id/titleText"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Title"
+            android:textColor="#000000"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/measureValueText"
             android:layout_marginLeft="10dp"
             android:layout_weight="3"
             android:layout_width="0dp"
@@ -28,15 +39,8 @@
             android:gravity="center_horizontal"
             android:text="000cm"
             android:textColor="#000000"
-            android:textSize="20sp"/>
+            android:textSize="12sp"/>
 
-        <Button
-            android:id="@+id/thumbnailImage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="10dp"
-            android:text="선택"/>
 
     </LinearLayout>
 
