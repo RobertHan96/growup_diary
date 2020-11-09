@@ -20,6 +20,7 @@ import kotlin.collections.ArrayList
 class TimeLineActivity : BaseActivity() {
     var db = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
+    private var documentsId = arrayListOf<String>()
     private lateinit var userID : String
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -32,7 +33,9 @@ class TimeLineActivity : BaseActivity() {
         postListView.setOnItemClickListener { parent, view, position, id ->
             val postDetail = Intent(mContext, PostDetailActivity::class.java)
             val clickedPost = postList.get(position)
-//            postDetail.putParcelableArrayListExtra("postListData", clickedPost)
+            val clickedPostId = documentsId?.get(position)
+            postDetail.putExtra("postData", clickedPost)
+            postDetail.putExtra("postId", clickedPostId)
             startActivity(postDetail)
         }
     }
@@ -69,9 +72,11 @@ class TimeLineActivity : BaseActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
+                    val documentId = document.id
+                    documentsId.add(documentId)
                     val postData = document.data.toMutableMap()
                     val post = convertToPost(postData)
-                    Log.d("log", "게시글 불러오리 성공 : ${post} ")
+                    Log.d("log", "게시글 불러오기 성공 : ${document.id} - ${post} ")
                     postList.add(post)
                 }
             }

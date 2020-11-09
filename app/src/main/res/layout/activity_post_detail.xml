@@ -12,8 +12,36 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="horizontal"
         android:layout_height="0dp"
         android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="제목"
+            android:textSize="20dp"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/postModifyBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="수정"/>
+        <Button
+            android:id="@+id/postDeleteBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="삭제"/>
+
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -21,22 +49,35 @@
         android:src="@mipmap/ic_launcher_round"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="4"/>
 
-    <TextView
-        android:id="@+id/postTitleText"
+    <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="horizontal"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_marginTop="20dp"
-        android:text="제목" />
+        android:layout_weight="1">
 
+        <TextView
+            android:id="@+id/createdAtText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/measuredValueText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="" />
+
+    </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3">
         <TextView
-            android:id="@+id/PostContentText"
+            android:id="@+id/contentText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="내용" />
