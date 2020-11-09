@@ -201,7 +201,6 @@ class WriteDiaryActivity : BaseActivity() {
         val title = titleEdt.text.toString()
         val content = contentEdt.text.toString()
         val imgUrl = imageUrl
-//        val createdAt = FieldValue.serverTimestamp()
         val createdAt = getCurrentTime()
         val post = Post(userID, measuereValue ,title, content, imgUrl, createdAt)
         return  post

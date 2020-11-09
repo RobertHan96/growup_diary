@@ -23,11 +23,21 @@ class TimeLineActivity : BaseActivity() {
     private var documentsId = arrayListOf<String>()
     private lateinit var userID : String
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
-
     val postList = ArrayList<Post>()
     // 코드 후반부에 값초기화가 있을 경우를 대비해서 나중에 init한다는 키워드 추가
-    private lateinit var mPostAdapter : PostAdapter
+    lateinit var mPostAdapter : PostAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_time_line)
+        setupEvents()
+        setValues()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        mPostAdapter.notifyDataSetChanged()
+    }
 
     override fun setupEvents() {
         postListView.setOnItemClickListener { parent, view, position, id ->
@@ -36,6 +46,7 @@ class TimeLineActivity : BaseActivity() {
             val clickedPostId = documentsId?.get(position)
             postDetail.putExtra("postData", clickedPost)
             postDetail.putExtra("postId", clickedPostId)
+            mPostAdapter.notifyDataSetChanged()
             startActivity(postDetail)
         }
     }
@@ -57,13 +68,6 @@ class TimeLineActivity : BaseActivity() {
 
         }, 2000)
 
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_time_line)
-        setupEvents()
-        setValues()
     }
 
     fun getPosts() {

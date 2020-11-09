@@ -28,13 +28,14 @@ class PostDetailActivity : BaseActivity() {
     override fun setupEvents() {
         postDeleteBtn.setOnClickListener {
             deletePost()
-            finish()
+            val timeLineActivity = Intent( mContext, TimeLineActivity::class.java)
+            startActivity(timeLineActivity)
         }
 
         postModifyBtn.setOnClickListener {
             val postEditActivity = Intent( mContext, PostEditActivity::class.java)
             postEditActivity.putExtra("postData", mPostData)
-            postEditActivity.putExtra("postId", mPostData)
+            postEditActivity.putExtra("postId", mPostId)
             startActivity(postEditActivity)
         }
     }
@@ -61,7 +62,8 @@ class PostDetailActivity : BaseActivity() {
     }
 
     private fun deletePost() {
-        db.collection("cities").document(mPostId)
+        Log.d("log", "게시글 삭제 ID - ${mPostId}")
+        db.collection("posts").document(mPostId)
             .delete()
             .addOnSuccessListener { Log.d("log", "게시글 삭제 완료") }
             .addOnFailureListener { e -> Log.d("log", "게시글 삭제 중 오류 발생 : ", e) }

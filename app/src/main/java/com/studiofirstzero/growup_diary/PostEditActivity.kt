@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.bumptech.glide.Glide
@@ -29,6 +31,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PostEditActivity : BaseActivity() {
     private val REQUEST_CODE = 1001
     var db = FirebaseFirestore.getInstance()
@@ -48,6 +51,8 @@ class PostEditActivity : BaseActivity() {
             val postImage = findViewById<ImageView>(R.id.postImage)
             uploadImageAndPost(postImage)
             finish()
+//            val timeLineActivity = Intent( mContext, TimeLineActivity::class.java)
+//            startActivity(timeLineActivity)
         }
 
         openGalleryBtn.setOnClickListener{
@@ -72,11 +77,13 @@ class PostEditActivity : BaseActivity() {
 
         val postData = intent.getParcelableExtra<Post>("postData").apply {
             mPostData = this
-            Log.d("log", "게시글 정보 불러오기 성공")
-            titleEdt.text = this.title
-            contentText.text = this.content
-            measuredValueText.text = this.measureValue.toString()
-            Glide.with(mContext).load(this.imageUrl).override(300,300).into(postImage)
+            Log.d("log", "게시글 정보 불러오기 성공 ${mPostData.toString()}")
+            val titleEditView = findViewById<EditText>(R.id.titleEdt)
+            val contentEditView = findViewById<EditText>(R.id.contentEdt)
+            val postImageView = findViewById<ImageView>(R.id.postImage)
+            titleEditView.setText(this.title)
+            contentEditView.setText(this.content)
+            Glide.with(mContext).load(this.imageUrl).override(300,300).into(postImageView)
         }
     }
 
@@ -129,9 +136,10 @@ class PostEditActivity : BaseActivity() {
     }
 
     private fun getPostInfo(imageUrl : String) : Post {
-        val measuereValue = measuredValueText.text.toString().toFloat()
+        val contentEditView = findViewById<EditText>(R.id.contentEdt)
+        val measuereValue = mPostData.measureValue
         val title = titleEdt.text.toString()
-        val content = contentEdt.text.toString()
+        val content = contentEditView.text.toString()
         val imgUrl = imageUrl
         val createdAt = mPostData.createdAt
         val id = mPostData.id
@@ -142,10 +150,19 @@ class PostEditActivity : BaseActivity() {
     private fun editDiary(post : Post) {
         val tableName = "posts"
         db.collection(tableName).document(mPostId)
-            .update("title", post.title, "content", post.content, "immageUrl", post.imageUrl)
+            .update(mapOf(
+                "title" to post.title,
+                "content" to post.content,
+                "imageUrl" to post.imageUrl
+            ))
             .addOnSuccessListener { Log.d("log", "게시글 ${mPostId} 수정 완료") }
             .addOnFailureListener { Log.d("log", "게시글 ${mPostId} 수정 실패") }
-        finish()
+    }
+
+    private fun getCurrentTime() : String {
+        val currentDateTime = Calendar.getInstance().time
+        var dateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.KOREA).format(currentDateTime)
+        return dateFormat
     }
 
 }
