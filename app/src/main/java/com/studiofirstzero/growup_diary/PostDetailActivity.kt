@@ -16,6 +16,7 @@ import kotlin.math.log
 class PostDetailActivity : BaseActivity() {
     var db = FirebaseFirestore.getInstance()
     private lateinit var mPostId : String
+    private lateinit var mPostData : Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,13 +27,15 @@ class PostDetailActivity : BaseActivity() {
 
     override fun setupEvents() {
         postDeleteBtn.setOnClickListener {
-            deletePost("")
+            deletePost()
             finish()
         }
 
         postModifyBtn.setOnClickListener {
-            val writeDiary = Intent( mContext, WriteDiaryActivity::class.java)
-            startActivity(writeDiary)
+            val postEditActivity = Intent( mContext, PostEditActivity::class.java)
+            postEditActivity.putExtra("postData", mPostData)
+            postEditActivity.putExtra("postId", mPostData)
+            startActivity(postEditActivity)
         }
     }
 
@@ -47,6 +50,7 @@ class PostDetailActivity : BaseActivity() {
         }
 
         val postData = intent.getParcelableExtra<Post>("postData").apply {
+            mPostData = this
             Log.d("log", "게시글 정보 불러오기 성공")
             titleText.text = this.title
             contentText.text = this.content
@@ -56,11 +60,11 @@ class PostDetailActivity : BaseActivity() {
         }
     }
 
-    private fun deletePost(createdAt : String) {
+    private fun deletePost() {
         db.collection("cities").document(mPostId)
             .delete()
-            .addOnSuccessListener { Log.d("log", "DocumentSnapshot successfully deleted!") }
-            .addOnFailureListener { e -> Log.d("log", "Error deleting document", e) }
+            .addOnSuccessListener { Log.d("log", "게시글 삭제 완료") }
+            .addOnFailureListener { e -> Log.d("log", "게시글 삭제 중 오류 발생 : ", e) }
     }
 
 }
