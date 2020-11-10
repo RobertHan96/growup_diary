@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -85,6 +86,9 @@ class TimeLineActivity : BaseActivity() {
                     mDocumentId.add(postDocumentId)
                     mPosts.add(post)
                 }
+            if (mPosts.isEmpty()){
+                toastError()
+            }
         }
     }
 
@@ -97,6 +101,11 @@ class TimeLineActivity : BaseActivity() {
         val createdAt = data.get("createdAt") as String
         val post = Post(id, measureValue, title, content, imageUrl, createdAt)
         return post
+    }
+
+    private fun toastError() {
+        Toast.makeText(mContext, "게시글 정보를 불러오지 못했습니다.\n잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        finish()
     }
 
 }

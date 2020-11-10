@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -26,6 +27,11 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        ConnectionStateMonitor(mContext, {
+            Toast.makeText(mContext, "인터넷 연결 됨", Toast.LENGTH_SHORT).show()
+        }, {
+            Toast.makeText(mContext, "원활한 기능 사용을 인터넷 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show()
+        })
         setValues()
         setupEvents()
     }

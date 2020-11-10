@@ -68,6 +68,8 @@ class PostDetailActivity : BaseActivity() {
             .delete()
             .addOnSuccessListener { Log.d("log", "게시글 삭제 완료") }
             .addOnFailureListener { e -> Log.d("log", "게시글 삭제 중 오류 발생 : ", e) }
+            Toast.makeText(mContext, "게시글을 삭제하지 못했습니다.", Toast.LENGTH_SHORT).show()
+            finish()
     }
 
     private fun getPostData() {

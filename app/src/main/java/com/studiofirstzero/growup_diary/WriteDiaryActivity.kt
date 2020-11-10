@@ -110,9 +110,7 @@ class WriteDiaryActivity : BaseActivity() {
                 Toast.makeText(mContext, "연결된 측정기가 없습니다, 연결 버튼을 통해 연결해주세요.", Toast.LENGTH_SHORT).show();
             }
         })
-
-
-    }
+    } //setupEvents
 
     override fun onStart() {
         super.onStart()
@@ -148,8 +146,7 @@ class WriteDiaryActivity : BaseActivity() {
                 Glide.with(mContext).load(data?.data).into(postImageView)
             }
         }
-
-    }
+    } // onActivityResult
 
     private fun uploadImageAndPost(imageView : ImageView) {
         imageView.isDrawingCacheEnabled = true
@@ -165,6 +162,7 @@ class WriteDiaryActivity : BaseActivity() {
         var uploadTask = imageRef.putBytes(data)
         uploadTask.addOnFailureListener {
             Log.d("log", "포스트 첨부이미지 업로드 중 오류 발생 ${it}")
+            toastError()
         }.addOnSuccessListener { taskSnapshot ->
             val imageUrl = imageRef.downloadUrl.toString()
         }
@@ -185,6 +183,7 @@ class WriteDiaryActivity : BaseActivity() {
                 Log.d("log", "이미지 업로드 성공 : ${downloadUri}}")
             } else {
                 Log.d("log", "포스트 첨부이미지 업로드 중 오류 발생")
+                toastError()
             }
         }
 
@@ -215,10 +214,14 @@ class WriteDiaryActivity : BaseActivity() {
             }
             .addOnFailureListener { e ->
                 Log.d("log", "Error adding document", e)
+                toastError()
             }
-
         finish()
     }
 
+    private fun toastError() {
+        Toast.makeText(mContext, "작성 중 오류 발생 : 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        finish()
+    }
 }
 
