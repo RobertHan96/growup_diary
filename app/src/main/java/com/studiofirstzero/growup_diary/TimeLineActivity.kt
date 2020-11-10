@@ -9,21 +9,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.studiofirstzero.growup_diary.adapters.PostAdapter
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_time_line.*
 import kotlin.collections.ArrayList
 
-// 여태까지 작성했던 글들을 몰아서 보는 곳 : 리스트뷰로 구현
-// SNS 공유 기능 라이브러리 찾아보기
-
 class TimeLineActivity : BaseActivity() {
     var db = FirebaseFirestore.getInstance()
     private lateinit var auth: FirebaseAuth
-    private var documentsId = arrayListOf<String>()
-    private lateinit var userID : String
+    private var mDocumentId = arrayListOf<String>()
+    private lateinit var mUserID : String
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    val postList = ArrayList<Post>()
+    val mPosts = ArrayList<Post>()
     // 코드 후반부에 값초기화가 있을 경우를 대비해서 나중에 init한다는 키워드 추가
     lateinit var mPostAdapter : PostAdapter
 
@@ -42,8 +40,8 @@ class TimeLineActivity : BaseActivity() {
     override fun setupEvents() {
         postListView.setOnItemClickListener { parent, view, position, id ->
             val postDetail = Intent(mContext, PostDetailActivity::class.java)
-            val clickedPost = postList.get(position)
-            val clickedPostId = documentsId?.get(position)
+            val clickedPost = mPosts.get(position)
+            val clickedPostId = mDocumentId?.get(position)
             postDetail.putExtra("postData", clickedPost)
             postDetail.putExtra("postId", clickedPostId)
             mPostAdapter.notifyDataSetChanged()
@@ -58,8 +56,8 @@ class TimeLineActivity : BaseActivity() {
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
         auth = FirebaseAuth.getInstance()
-        userID = auth.currentUser?.email.toString()
-        mPostAdapter = PostAdapter(mContext, R.layout.post_list_item, postList)
+        mUserID = auth.currentUser?.email.toString()
+        mPostAdapter = PostAdapter(mContext, R.layout.post_list_item, mPosts)
         getPosts()
 
         postListView.adapter = mPostAdapter
@@ -67,29 +65,30 @@ class TimeLineActivity : BaseActivity() {
             mPostAdapter.notifyDataSetChanged()
 
         }, 2000)
-
     }
 
     fun getPosts() {
-        db.collection("posts")
-            .whereEqualTo("id", userID)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    val documentId = document.id
-                    documentsId.add(documentId)
-                    val postData = document.data.toMutableMap()
-                    val post = convertToPost(postData)
-                    Log.d("log", "게시글 불러오기 성공 : ${document.id} - ${post} ")
-                    postList.add(post)
+        val docRef = db.collection("posts")
+        docRef
+            .whereEqualTo("id", mUserID)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.d("log", "Listen failed.", error)
+                    return@addSnapshotListener
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("log", "Error getting documents: ", exception)
-            }
+                mDocumentId.clear()
+                mPosts.clear()
+
+                for (postData in value!! ) {
+                    val post = getDatafromSnapshot(postData)
+                    val postDocumentId = postData.id
+                    mDocumentId.add(postDocumentId)
+                    mPosts.add(post)
+                }
+        }
     }
 
-    fun convertToPost(data: MutableMap<String, Any>) : Post {
+    fun getDatafromSnapshot(data: QueryDocumentSnapshot) : Post {
         val id = data.get("id") as String
         val measureValue = data.get("measureValue") as Number
         val title = data.get("title") as String

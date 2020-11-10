@@ -51,8 +51,6 @@ class PostEditActivity : BaseActivity() {
             val postImage = findViewById<ImageView>(R.id.postImage)
             uploadImageAndPost(postImage)
             finish()
-//            val timeLineActivity = Intent( mContext, TimeLineActivity::class.java)
-//            startActivity(timeLineActivity)
         }
 
         openGalleryBtn.setOnClickListener{
