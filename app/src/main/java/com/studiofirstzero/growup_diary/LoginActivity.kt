@@ -1,8 +1,11 @@
 package com.studiofirstzero.growup_diary
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -27,13 +30,28 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        ConnectionStateMonitor(mContext, {
-            Toast.makeText(mContext, "인터넷 연결 됨", Toast.LENGTH_SHORT).show()
-        }, {
-            Toast.makeText(mContext, "원활한 기능 사용을 인터넷 연결상태를 확인해주세요.", Toast.LENGTH_SHORT).show()
-        })
         setValues()
         setupEvents()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkNetworkConnection(mContext)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        checkNetworkConnection(mContext)
+    }
+
+    private fun checkNetworkConnection(context: Activity) {
+        ConnectionStateMonitor(context, {
+            Toast.makeText(context, "인터넷 연결 됨", Toast.LENGTH_SHORT).show()
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }, {
+            Toast.makeText(context, "원활한 기능 사용을 인터넷을 연결해주세요.", Toast.LENGTH_SHORT).show()
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        })
     }
 
     override fun setupEvents() {
