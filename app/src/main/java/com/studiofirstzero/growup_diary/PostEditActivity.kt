@@ -135,11 +135,11 @@ class PostEditActivity : BaseActivity() {
 
     private fun getPostInfo(imageUrl : String) : Post {
         val contentEditView = findViewById<EditText>(R.id.contentEdt)
-        val measuereValue = mPostData.measureValue
+        val measuereValue = mPostData.measureValue?.toInt()
         val title = titleEdt.text.toString()
         val content = contentEditView.text.toString()
         val imgUrl = imageUrl
-        val createdAt = mPostData.createdAt
+        val createdAt = mPostData.createdAt?.subSequence(0,10).toString()
         val id = mPostData.id
         val post = Post(id, measuereValue ,title, content, imgUrl, createdAt)
         return  post

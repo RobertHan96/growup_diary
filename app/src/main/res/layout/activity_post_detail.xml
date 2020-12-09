@@ -6,9 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="20dp"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
     tools:context=".WriteDiaryActivity">
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="제목"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/colorTitleBlack"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,30 +30,42 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/titleText"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="제목"
-            android:textSize="20dp"
+            android:layout_marginRight="8dp"
+            android:text="등록일"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textColor="@color/colorTitleBlack"
             />
 
         <TextView
+            android:id="@+id/createdAtText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-        <Button
-            android:id="@+id/postModifyBtn"
+            android:layout_gravity="center"
+            android:layout_weight="5"
+            android:text="2020-10-10" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:text="측정값"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textColor="@color/colorTitleBlack"
+            />
+
+        <TextView
+            android:id="@+id/measuredValueText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="수정"/>
-        <Button
-            android:id="@+id/postDeleteBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="삭제"/>
+            android:layout_gravity="center"
+            android:layout_weight="5"
+            android:text="186cm" />
 
     </LinearLayout>
 
@@ -48,8 +73,25 @@
         android:id="@+id/postImage"
         android:src="@mipmap/ic_launcher_round"
         android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
         android:layout_height="0dp"
-        android:layout_weight="4"/>
+        android:layout_weight="2.5"/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="3">
+        <TextView
+            android:id="@+id/contentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/colorTitleBlack"
+            android:text="내용" />
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,37 +99,23 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/createdAtText"
+        <Button
+            android:id="@+id/postModifyBtn"
+            android:background="@drawable/main_menu_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="" />
+            android:layout_weight="2"
+            android:text="수정"/>
 
-        <TextView
-            android:id="@+id/measuredValueText"
+        <Button
+            android:id="@+id/postDeleteBtn"
+            android:background="@drawable/main_menu_button"
+            android:layout_marginLeft="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="" />
+            android:layout_weight="2"
+            android:text="삭제"/>
 
     </LinearLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3">
-        <TextView
-            android:id="@+id/contentText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="내용" />
-    </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
-    </LinearLayout>
-
 
 </LinearLayout>

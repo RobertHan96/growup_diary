@@ -86,8 +86,8 @@ class PostDetailActivity : BaseActivity() {
                     mPostData = convertToPost(this)
                     titleText.text = mPostData.title
                     contentText.text = mPostData.content
-                    createdAtText.text = mPostData.createdAt
-                    measuredValueText.text = mPostData.measureValue.toString()
+                    createdAtText.text = mPostData.createdAt?.subSequence(0,10)
+                    measuredValueText.text = mPostData.measureValue?.toInt().toString()
                     Glide.with(mContext).load(mPostData.imageUrl).override(300,300).into(postImage)
 
                 }

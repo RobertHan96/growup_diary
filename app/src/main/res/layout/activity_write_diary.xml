@@ -14,40 +14,65 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="@color/colorTitleBlack"
         android:text="제목" />
 
     <EditText
         android:id="@+id/titleEdt"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="@drawable/boder"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="@color/colorTitleBlack"
+        android:text="내용" />
+
+    <EditText
+        android:id="@+id/contentEdt"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
+        android:background="@drawable/boder"
         android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="내용" />
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="@color/colorTitleBlack"
+        android:layout_gravity="center_vertical"
+        android:text="측정 결과" />
 
-    <EditText
-        android:id="@+id/contentEdt"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:inputType="text" />
+    <TextView
+        android:id="@+id/measuredValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
+        android:layout_gravity="center_vertical"
+        android:textColor="#000"
+        android:text="cm" />
 
     <ImageView
         android:id="@+id/postImage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"/>
-
-    <TextView
-        android:id="@+id/measuredValueText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="186.33" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,6 +88,7 @@
 
         <Button
             android:id="@+id/writePostBtn"
+            android:background="@drawable/main_menu_button"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
@@ -70,6 +96,9 @@
 
         <Button
             android:id="@+id/getMeasureValuesBtn"
+            android:background="@drawable/main_menu_button"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
@@ -77,6 +106,7 @@
 
         <Button
             android:id="@+id/openGalleryBtn"
+            android:background="@drawable/main_menu_button"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"

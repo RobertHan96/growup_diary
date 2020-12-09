@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.studiofirstzero.growup_diary.R
 import com.studiofirstzero.growup_diary.datas.Post
+import kotlin.math.floor
+import kotlin.math.round
 
 class PostAdapter(context: Context, resID:Int, list: ArrayList<Post>)  : ArrayAdapter<Post>(context, resID, list)  {
     val mContext = context
@@ -30,8 +32,8 @@ class PostAdapter(context: Context, resID:Int, list: ArrayList<Post>)  : ArrayAd
         val measureValue = row.findViewById<TextView>(R.id.measureValueText)
 
         title.text = data.title
-        measureValue.text = data.measureValue.toString()
-        createdAt.text = data.createdAt.toString()
+        measureValue.text = "${data.measureValue?.toInt()}cm"
+        createdAt.text = data.createdAt?.subSequence(0,10)
         return  row
     }
 
