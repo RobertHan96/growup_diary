@@ -77,6 +77,13 @@ class WriteDiaryActivity : BaseActivity() {
             }
         }
 
+        openGalleryBtn.setOnClickListener{
+            val myIntent = Intent(Intent.ACTION_PICK)
+            myIntent.setType("image/*") //가져올 이미지 파일들의 확장자 결정
+            myIntent.setType(MediaStore.Images.Media.CONTENT_TYPE)
+            startActivityForResult(myIntent, REQUEST_CODE)
+        }
+
         getMeasureValuesBtn.setOnClickListener {
             if (bt.serviceState == BluetoothState.STATE_CONNECTED) {
                 bt.disconnect()
@@ -84,13 +91,6 @@ class WriteDiaryActivity : BaseActivity() {
                 val intent = Intent(mContext, DeviceList::class.java)
                 startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE)
             }
-        }
-
-        openGalleryBtn.setOnClickListener{
-            val myIntent = Intent(Intent.ACTION_PICK)
-            myIntent.setType("image/*") //가져올 이미지 파일들의 확장자 결정
-            myIntent.setType(MediaStore.Images.Media.CONTENT_TYPE)
-            startActivityForResult(myIntent, REQUEST_CODE)
         }
 
         bt.setOnDataReceivedListener { data, message ->

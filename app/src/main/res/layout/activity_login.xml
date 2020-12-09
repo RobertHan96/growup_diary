@@ -14,8 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:text="아이디"
         android:textSize="30dp"
-        android:text="아이디" />
+        android:textStyle="bold"
+        android:textColor="@color/colorTitleBlack"
+        />
 
     <TextView
         android:id="@+id/userEmailText"
@@ -23,24 +26,44 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:textSize="24dp"
-        android:text="비밀번호" />
+        android:text="비밀번호"
+        android:textStyle="bold"
+        android:textColor="@color/colorTitleBlack"
+        />
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/loginBtn"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="3">
 
-    <Button
-        android:id="@+id/logoutBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="로그아웃" />
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/loginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
 
-    <Button
-        android:id="@+id/revokeBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="회원탈퇴" />
+        <Button
+            android:id="@+id/logoutBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/google_login_button"
+            android:textColor="@color/colorBtnTitleWhite"
+            android:text="로그아웃" />
+
+        <Button
+            android:id="@+id/revokeBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/google_login_button"
+            android:textColor="@color/colorBtnTitleWhite"
+            android:text="회원탈퇴" />
+
+    </LinearLayout>
 
 </LinearLayout>

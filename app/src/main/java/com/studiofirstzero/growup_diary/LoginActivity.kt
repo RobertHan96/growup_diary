@@ -7,11 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -46,7 +48,6 @@ class LoginActivity : BaseActivity() {
 
     private fun checkNetworkConnection(context: Activity) {
         ConnectionStateMonitor(context, {
-            Toast.makeText(context, "인터넷 연결 됨", Toast.LENGTH_SHORT).show()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }, {
             Toast.makeText(context, "원활한 기능 사용을 인터넷을 연결해주세요.", Toast.LENGTH_SHORT).show()
@@ -75,6 +76,7 @@ class LoginActivity : BaseActivity() {
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
         auth = FirebaseAuth.getInstance()
+        loginBtn.setColorScheme(SignInButton.COLOR_DARK)
     }
 
     override fun onStart() {

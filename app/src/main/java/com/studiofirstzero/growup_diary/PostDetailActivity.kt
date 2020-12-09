@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import java.lang.Exception
+import java.util.*
 import kotlin.math.log
 
 class PostDetailActivity : BaseActivity() {

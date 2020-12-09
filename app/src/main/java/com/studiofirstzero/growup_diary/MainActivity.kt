@@ -46,10 +46,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setupEvents() {
-        find_bt_device_btn.setOnClickListener {
-
-        }
-
         write_diary_btn.setOnClickListener {
             val writeDiary = Intent( mContext, WriteDiaryActivity::class.java)
             startActivity(writeDiary)
