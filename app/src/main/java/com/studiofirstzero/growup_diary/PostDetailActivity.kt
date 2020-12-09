@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.PointerIcon.load
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.studiofirstzero.growup_diary.datas.Post
@@ -28,8 +29,17 @@ class PostDetailActivity : BaseActivity() {
 
     override fun setupEvents() {
         postDeleteBtn.setOnClickListener {
-            deletePost()
-            finish()
+            val alert = AlertDialog.Builder(mContext).apply {
+                this.setTitle("삭제 안내")
+                this.setMessage("정말 삭제하시겠습니까?")
+                this.setPositiveButton("네", { dialog, which ->
+                    deletePost()
+                    finish()
+                })
+                this.setNegativeButton("취소",  { dialog, which ->
+                    finish()
+                })
+            }.show()
         }
 
         postModifyBtn.setOnClickListener {
@@ -46,7 +56,6 @@ class PostDetailActivity : BaseActivity() {
             mPostId = postId
         } catch (e : Exception) {
             Log.d("log", "게시글 ID 불러오기 실패 ${e}")
-            Toast.makeText(mContext, "게시글을 삭제하지 못했습니다.", Toast.LENGTH_SHORT).show()
             finish()
         }
 

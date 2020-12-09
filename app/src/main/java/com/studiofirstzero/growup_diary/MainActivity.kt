@@ -22,18 +22,17 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        checkNetworkConnection(mContext)
         setValues()
         setupEvents()
     }
 
     override fun onResume() {
         super.onResume()
-        checkNetworkConnection(mContext)
     }
 
     override fun onStop() {
         super.onStop()
-        checkNetworkConnection(mContext)
     }
 
     private fun checkNetworkConnection(context: Activity) {

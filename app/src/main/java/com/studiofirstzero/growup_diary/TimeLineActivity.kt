@@ -104,7 +104,7 @@ class TimeLineActivity : BaseActivity() {
     }
 
     private fun toastError() {
-        Toast.makeText(mContext, "게시글 정보를 불러오지 못했습니다.\n잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(mContext, "작성한 게시글 내역이 없습니다.", Toast.LENGTH_SHORT).show()
         finish()
     }
 

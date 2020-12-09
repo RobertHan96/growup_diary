@@ -67,13 +67,16 @@ class WriteDiaryActivity : BaseActivity() {
     override fun setupEvents() {
         writePostBtn.setOnClickListener {
             val currentUser = auth.currentUser
-            if (currentUser == null) {
+
+            if (currentUser == null ) {
                 val loginActivity = Intent(mContext, LoginActivity::class.java)
                 startActivity(loginActivity)
-            } else {
+            } else if (currentUser != null && isValidPost() ) {
                 userID = auth.currentUser?.email.toString()
                 val postImage = findViewById<ImageView>(R.id.postImage)
                 uploadImageAndPost(postImage)
+            } else {
+                toastError()
             }
         }
 
@@ -148,6 +151,15 @@ class WriteDiaryActivity : BaseActivity() {
         }
     } // onActivityResult
 
+
+
+    private fun isValidPost() : Boolean {
+        val measuereValue = measuredValueText.text
+        val title = titleEdt.text
+        val content = contentEdt.text
+        return measuereValue != null && title != null && content != null && postImage.drawable != null
+    }
+
     private fun uploadImageAndPost(imageView : ImageView) {
         imageView.isDrawingCacheEnabled = true
         imageView.buildDrawingCache()
@@ -220,8 +232,9 @@ class WriteDiaryActivity : BaseActivity() {
     }
 
     private fun toastError() {
-        Toast.makeText(mContext, "작성 중 오류 발생 : 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
-        finish()
+        runOnUiThread {
+            Toast.makeText(mContext, "작성 중 오류 발생 : 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        }
     }
 }
 

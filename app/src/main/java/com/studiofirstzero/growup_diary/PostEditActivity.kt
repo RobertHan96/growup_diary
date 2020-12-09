@@ -48,9 +48,14 @@ class PostEditActivity : BaseActivity() {
 
     override fun setupEvents() {
         editPostBtn.setOnClickListener {
-            val postImage = findViewById<ImageView>(R.id.postImage)
-            uploadImageAndPost(postImage)
-            finish()
+            if ( isValidPost() ) {
+                val postImage = findViewById<ImageView>(R.id.postImage)
+                uploadImageAndPost(postImage)
+                finish()
+            } else {
+                toastError()
+            }
+
         }
 
         openGalleryBtn.setOnClickListener{
@@ -92,6 +97,20 @@ class PostEditActivity : BaseActivity() {
                 val postImageView = findViewById<ImageView>(R.id.postImage)
                 Glide.with(mContext).load(data?.data).into(postImageView)
             }
+        }
+    }
+
+    private fun isValidPost() : Boolean {
+        val measuereValue = measuredValueText.text
+        val contentTextView = findViewById<TextView>(R.id.contentEdt)
+        val title = titleEdt.text
+        val content = contentTextView.text
+        return measuereValue != null && title != null && content != null && postImage.drawable != null
+    }
+
+    private fun toastError() {
+        runOnUiThread {
+            Toast.makeText(mContext, "작성 중 오류 발생 : 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
         }
     }
 
