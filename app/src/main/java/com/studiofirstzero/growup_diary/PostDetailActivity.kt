@@ -4,16 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.PointerIcon.load
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
+import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import java.lang.Exception
-import java.util.*
-import kotlin.math.log
 
 class PostDetailActivity : BaseActivity() {
     var db = FirebaseFirestore.getInstance()
@@ -77,8 +75,10 @@ class PostDetailActivity : BaseActivity() {
         db.collection("posts").document(mPostId)
             .delete()
             .addOnSuccessListener { Log.d("log", "게시글 삭제 완료") }
-            .addOnFailureListener { e -> Log.d("log", "게시글 삭제 중 오류 발생 : ", e) }
-            Toast.makeText(mContext, "게시글을 삭제하지 못했습니다.", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+                Log.d("log", "게시글 삭제 중 오류 발생 : ", e)
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.PostDeleteFail)
+            }
             finish()
     }
 

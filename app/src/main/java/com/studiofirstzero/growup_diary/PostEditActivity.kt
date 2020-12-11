@@ -10,14 +10,12 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import app.akexorcist.bluetotohspp.library.BluetoothState
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_post_detail.measuredValueText
@@ -53,9 +51,8 @@ class PostEditActivity : BaseActivity() {
                 uploadImageAndPost(postImage)
                 finish()
             } else {
-                toastError()
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.InvaildPost)
             }
-
         }
 
         openGalleryBtn.setOnClickListener{
@@ -74,7 +71,7 @@ class PostEditActivity : BaseActivity() {
             mPostId = postId
         } catch (e : Exception) {
             Log.d("log", "게시글 ID 불러오기 실패 ${e}")
-            Toast.makeText(mContext, "게시글 정보를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.PostIsEmpty)
             finish()
         }
 
@@ -102,16 +99,9 @@ class PostEditActivity : BaseActivity() {
 
     private fun isValidPost() : Boolean {
         val measuereValue = measuredValueText.text
-        val contentTextView = findViewById<TextView>(R.id.contentEdt)
         val title = titleEdt.text
-        val content = contentTextView.text
+        val content = contentText.text
         return measuereValue != null && title != null && content != null && postImage.drawable != null
-    }
-
-    private fun toastError() {
-        runOnUiThread {
-            Toast.makeText(mContext, "작성 중 오류 발생 : 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun uploadImageAndPost(imageView : ImageView) {
@@ -166,6 +156,7 @@ class PostEditActivity : BaseActivity() {
 
     private fun editDiary(post : Post) {
         val tableName = "posts"
+        Log.d("log", post.toString())
         db.collection(tableName).document(mPostId)
             .update(mapOf(
                 "title" to post.title,

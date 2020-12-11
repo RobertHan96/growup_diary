@@ -1,15 +1,11 @@
 package com.studiofirstzero.growup_diary
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -20,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
+import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import kotlinx.android.synthetic.main.activity_login.*
 
 
@@ -50,7 +47,7 @@ class LoginActivity : BaseActivity() {
         ConnectionStateMonitor(context, {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }, {
-            Toast.makeText(context, "원활한 기능 사용을 인터넷을 연결해주세요.", Toast.LENGTH_SHORT).show()
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoNetwrokConnetcion)
             window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
     }
@@ -113,8 +110,7 @@ class LoginActivity : BaseActivity() {
                     Toast.makeText(mContext, "${user?.displayName}님 환영합니다.", Toast.LENGTH_SHORT).show()
                     updateUI(user)
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(mContext, "로그인 실패 : 네트워크 연결 상태를 확인해주세요.", Toast.LENGTH_SHORT).show()
+                    ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.LoginFail)
                 }
             }
     }
@@ -133,7 +129,7 @@ class LoginActivity : BaseActivity() {
         } else if (user != null && isSignupAlready(user) == false) {
             registerUserInfo(user)
         } else {
-            Toast.makeText(mContext, "기능 사용을 위해 로그인해주세요.", Toast.LENGTH_SHORT).show()
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NeedAuthentication)
             logoutBtn.isEnabled = false
             revokeBtn.isEnabled = false
         }

@@ -7,12 +7,9 @@ import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import app.akexorcist.bluetotohspp.library.BluetoothSPP
-import app.akexorcist.bluetotohspp.library.BluetoothSPP.BluetoothConnectionListener
-import app.akexorcist.bluetotohspp.library.BluetoothState
-import app.akexorcist.bluetotohspp.library.DeviceList
 import com.google.firebase.firestore.FirebaseFirestore
 import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
+import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -39,7 +36,8 @@ class MainActivity : BaseActivity() {
         ConnectionStateMonitor(context, {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }, {
-            Toast.makeText(context, "원활한 기능 사용을 인터넷을 연결해주세요.", LENGTH_SHORT).show()
+            // 코틀린 핵심정리 강의보고 코드 간소화 필요
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoNetwrokConnetcion)
             window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
     }

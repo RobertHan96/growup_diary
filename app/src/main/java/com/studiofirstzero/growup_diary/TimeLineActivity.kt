@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.adapters.PostAdapter
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_time_line.*
@@ -87,7 +88,8 @@ class TimeLineActivity : BaseActivity() {
                     mPosts.add(post)
                 }
             if (mPosts.isEmpty()){
-                toastError()
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.PostIsEmpty)
+
             }
         }
     }
@@ -101,11 +103,6 @@ class TimeLineActivity : BaseActivity() {
         val createdAt = data.get("createdAt") as String
         val post = Post(id, measureValue, title, content, imageUrl, createdAt)
         return post
-    }
-
-    private fun toastError() {
-        Toast.makeText(mContext, "작성한 게시글 내역이 없습니다.", Toast.LENGTH_SHORT).show()
-        finish()
     }
 
 }

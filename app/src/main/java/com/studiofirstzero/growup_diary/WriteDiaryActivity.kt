@@ -17,11 +17,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_write_diary.*
 import java.io.ByteArrayOutputStream
@@ -52,7 +52,7 @@ class WriteDiaryActivity : BaseActivity() {
     override fun setValues() {
         bt = BluetoothSPP(mContext)
         if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
-            Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoBLDevice)
             finish();
         }
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -76,7 +76,7 @@ class WriteDiaryActivity : BaseActivity() {
                 val postImage = findViewById<ImageView>(R.id.postImage)
                 uploadImageAndPost(postImage)
             } else {
-                toastError()
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.InvaildPost)
             }
         }
 
@@ -102,15 +102,15 @@ class WriteDiaryActivity : BaseActivity() {
 
         bt.setBluetoothConnectionListener(object : BluetoothSPP.BluetoothConnectionListener {
             override fun onDeviceConnected(name: String, address: String) {
-                Toast.makeText(mContext, "측정기와 연결되었습니다.", Toast.LENGTH_SHORT).show();
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.BLDeviceConnected)
             }
 
             override fun onDeviceDisconnected() {
-                Toast.makeText(mContext, "측정기와 연결이 해제되었습니다.", Toast.LENGTH_SHORT).show();
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.BLDeviceDisConnected)
             }
 
             override fun onDeviceConnectionFailed() {
-                Toast.makeText(mContext, "연결된 측정기가 없습니다, 연결 버튼을 통해 연결해주세요.", Toast.LENGTH_SHORT).show();
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoBLDevice)
             }
         })
     } //setupEvents
@@ -141,7 +141,7 @@ class WriteDiaryActivity : BaseActivity() {
                 bt.setupService()
                 bt.startService(BluetoothState.DEVICE_OTHER)
             } else {
-                Toast.makeText(mContext, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoBLDevice)
             }
         } else if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -174,7 +174,6 @@ class WriteDiaryActivity : BaseActivity() {
         var uploadTask = imageRef.putBytes(data)
         uploadTask.addOnFailureListener {
             Log.d("log", "포스트 첨부이미지 업로드 중 오류 발생 ${it}")
-            toastError()
         }.addOnSuccessListener { taskSnapshot ->
             val imageUrl = imageRef.downloadUrl.toString()
         }
@@ -190,12 +189,11 @@ class WriteDiaryActivity : BaseActivity() {
             if (task.isSuccessful) {
                 val downloadUri = task.result
                 val post = getPostInfo(downloadUri.toString())
-                postDiary(post)
-
+                postDiaryToDB(post)
                 Log.d("log", "이미지 업로드 성공 : ${downloadUri}}")
             } else {
                 Log.d("log", "포스트 첨부이미지 업로드 중 오류 발생")
-                toastError()
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.ImageUploadFail)
             }
         }
 
@@ -208,7 +206,12 @@ class WriteDiaryActivity : BaseActivity() {
     }
 
     private fun getPostInfo(imageUrl : String) : Post {
-        val measuereValue = measuredValueText.text.toString().toFloat()
+        var measuereValue : Number?
+        if  (measuredValueText.text == "cm") {
+            measuereValue = 0
+        } else {
+            measuereValue = measuredValueText.text.toString().toInt()
+        }
         val title = titleEdt.text.toString()
         val content = contentEdt.text.toString()
         val imgUrl = imageUrl
@@ -217,7 +220,7 @@ class WriteDiaryActivity : BaseActivity() {
         return  post
     }
 
-    private fun postDiary(post : Post) {
+    private fun postDiaryToDB(post : Post) {
         val tableName = "posts"
         db.collection(tableName)
             .add(post)
@@ -226,15 +229,9 @@ class WriteDiaryActivity : BaseActivity() {
             }
             .addOnFailureListener { e ->
                 Log.d("log", "Error adding document", e)
-                toastError()
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.PostUploadFail)
             }
         finish()
-    }
-
-    private fun toastError() {
-        runOnUiThread {
-            Toast.makeText(mContext, "작성 중 오류 발생 : 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
-        }
     }
 }
 
