@@ -1,9 +1,11 @@
 package com.studiofirstzero.growup_diary
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -21,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_write_diary.*
@@ -50,6 +53,7 @@ class WriteDiaryActivity : BaseActivity() {
     }
 
     override fun setValues() {
+        contentEdt.setSelection(0)
         bt = BluetoothSPP(mContext)
         if (!bt.isBluetoothAvailable()) { //블루투스 사용 불가
             ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoBLDevice)
@@ -65,18 +69,26 @@ class WriteDiaryActivity : BaseActivity() {
     }
 
     override fun setupEvents() {
-        writePostBtn.setOnClickListener {
-            val currentUser = auth.currentUser
 
-            if (currentUser == null ) {
-                val loginActivity = Intent(mContext, LoginActivity::class.java)
-                startActivity(loginActivity)
-            } else if (currentUser != null && isValidPost() ) {
-                userID = auth.currentUser?.email.toString()
-                val postImage = findViewById<ImageView>(R.id.postImage)
-                uploadImageAndPost(postImage)
+        writePostBtn.setOnClickListener {
+            val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (connectivityManager.activeNetworkInfo.isConnected == true ) {
+                val currentUser = auth.currentUser
+
+                if (currentUser == null ) {
+                    val loginActivity = Intent(mContext, LoginActivity::class.java)
+                    startActivity(loginActivity)
+                } else if (currentUser != null && isValidPost() ) {
+                    userID = auth.currentUser?.email.toString()
+                    val postImage = findViewById<ImageView>(R.id.postImage)
+                    uploadImageAndPost(postImage)
+                } else {
+                    ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.InvaildPost)
+                }
             } else {
-                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.InvaildPost)
+                runOnUiThread {
+                    ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoNetwrokConnetcion)
+                }
             }
         }
 

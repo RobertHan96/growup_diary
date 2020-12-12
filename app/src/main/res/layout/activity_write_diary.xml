@@ -46,6 +46,7 @@
         android:layout_height="0dp"
         android:layout_weight="3"
         android:background="@drawable/boder"
+        android:gravity="top"
         android:inputType="text" />
 
     <TextView

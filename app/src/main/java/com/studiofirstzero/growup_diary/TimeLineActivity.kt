@@ -4,13 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.adapters.PostAdapter
 import com.studiofirstzero.growup_diary.datas.Post
@@ -52,27 +58,38 @@ class TimeLineActivity : BaseActivity() {
     }
 
     override fun setValues() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
-        auth = FirebaseAuth.getInstance()
-        mUserID = auth.currentUser?.email.toString()
-        mPostAdapter = PostAdapter(mContext, R.layout.post_list_item, mPosts)
-        getPosts()
+        ConnectionStateMonitor(mContext,
+            {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build()
+                mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso)
+                auth = FirebaseAuth.getInstance()
+                mUserID = auth.currentUser?.email.toString()
+                val userName = auth.currentUser?.displayName.toString()
+                userNameText.text = "${userName}의 타임라인"
+                mPostAdapter = PostAdapter(mContext, R.layout.post_list_item, mPosts)
+                getPosts()
 
-        postListView.adapter = mPostAdapter
-        Handler().postDelayed({
-            mPostAdapter.notifyDataSetChanged()
+                postListView.adapter = mPostAdapter
+                Handler().postDelayed({
+                    mPostAdapter.notifyDataSetChanged()
 
-        }, 2000)
+                }, 2000)
+
+            },
+            {
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoNetwrokConnetcion)
+            }
+        )
     }
 
     fun getPosts() {
         val docRef = db.collection("posts")
         docRef
             .whereEqualTo("id", mUserID)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     Log.d("log", "Listen failed.", error)
@@ -105,4 +122,9 @@ class TimeLineActivity : BaseActivity() {
         return post
     }
 
+}
+
+class NoContentFragment : Fragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
+            = inflater.inflate(R.layout.activity_no_content, container, false)
 }

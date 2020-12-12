@@ -11,6 +11,36 @@
     android:layout_marginTop="12dp"
     tools:context=".WriteDiaryActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/editPostBtn"
+            android:background="@drawable/ic_baseline_edit_24"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            />
+
+        <ImageView
+            android:id="@+id/postImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            />
+
+        <Button
+            android:id="@+id/openGalleryBtn"
+            android:background="@drawable/ic_baseline_image_24"
+            android:layout_marginLeft="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,41 +98,12 @@
         android:textColor="#000"
         android:text="cm" />
 
-    <ImageView
-        android:id="@+id/postImage"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/editPostBtn"
-                android:background="@drawable/main_menu_button"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:text="수정"/>
-
-            <Button
-                android:id="@+id/openGalleryBtn"
-                android:background="@drawable/main_menu_button"
-                android:layout_marginLeft="8dp"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:text="갤러리"/>
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

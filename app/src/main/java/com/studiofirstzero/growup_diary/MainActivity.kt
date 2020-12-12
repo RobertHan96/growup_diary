@@ -1,7 +1,9 @@
 package com.studiofirstzero.growup_diary
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -72,6 +74,10 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setValues() {
-
+        ConnectionStateMonitor(mContext, {
+            Log.d("log", "네트워크 연결 완료")
+        }, {
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoNetwrokConnetcion)
+        })
     }
 }

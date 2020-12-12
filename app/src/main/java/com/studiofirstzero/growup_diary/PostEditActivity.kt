@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_post_detail.*
@@ -65,26 +66,33 @@ class PostEditActivity : BaseActivity() {
     }
 
     override fun setValues() {
-        storage = Firebase.storage
-        try {
-            val postId = intent.getStringExtra("postId")
-            mPostId = postId
-        } catch (e : Exception) {
-            Log.d("log", "게시글 ID 불러오기 실패 ${e}")
-            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.PostIsEmpty)
-            finish()
-        }
+        ConnectionStateMonitor(mContext, {
+            Log.d("log", "네트워크 연결 완료")
+            storage = Firebase.storage
+            try {
+                val postId = intent.getStringExtra("postId")
+                mPostId = postId
+            } catch (e : Exception) {
+                Log.d("log", "게시글 ID 불러오기 실패 ${e}")
+                ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.PostIsEmpty)
+                finish()
+            }
 
-        val postData = intent.getParcelableExtra<Post>("postData").apply {
-            mPostData = this
-            Log.d("log", "게시글 정보 불러오기 성공 ${mPostData.toString()}")
-            val titleEditView = findViewById<EditText>(R.id.titleEdt)
-            val contentEditView = findViewById<EditText>(R.id.contentEdt)
-            val postImageView = findViewById<ImageView>(R.id.postImage)
-            titleEditView.setText(this.title)
-            contentEditView.setText(this.content)
-            Glide.with(mContext).load(this.imageUrl).override(300,300).into(postImageView)
-        }
+            val postData = intent.getParcelableExtra<Post>("postData").apply {
+                mPostData = this
+                Log.d("log", "게시글 정보 불러오기 성공 ${mPostData.toString()}")
+                val titleEditView = findViewById<EditText>(R.id.titleEdt)
+                val contentEditView = findViewById<EditText>(R.id.contentEdt)
+                val postImageView = findViewById<ImageView>(R.id.postImage)
+                titleEditView.setText(this.title)
+                contentEditView.setText(this.content)
+                Glide.with(mContext).load(this.imageUrl).override(300,300).into(postImageView)
+            }
+
+        }, {
+            ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.NoNetwrokConnetcion)
+        })
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
