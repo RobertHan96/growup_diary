@@ -93,9 +93,11 @@ class PostDetailActivity : BaseActivity() {
             if (snapshot != null && snapshot.exists()) {
                 val currentPostData =  snapshot.data?.toMutableMap().apply {
                     mPostData = convertToPost(this)
-                    titleText.text = mPostData.title
+                    val year = mPostData.createdAt?.subSequence(0,4).toString()
+                    val month = mPostData.createdAt?.subSequence(5,7).toString()
+                    titleText.text = "${year}년 ${month}월의 기록"
                     contentText.text = mPostData.content
-                    createdAtText.text = mPostData.createdAt?.subSequence(0,10)
+                    createdAtText.text = mPostData.createdAt
                     measuredValueText.text = mPostData.measureValue?.toInt().toString()
                     Glide.with(mContext).load(mPostData.imageUrl).override(300,300).into(postImage)
 

@@ -12,7 +12,7 @@
     tools:context=".WriteDiaryActivity">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center">
@@ -20,32 +20,47 @@
         <Button
             android:id="@+id/editPostBtn"
             android:background="@drawable/ic_baseline_edit_24"
-            android:layout_width="0dp"
-            android:layout_weight="1.5"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             />
 
-        <ImageView
-            android:id="@+id/postImage"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
-            />
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/openGalleryBtn"
             android:background="@drawable/ic_baseline_image_24"
-            android:layout_marginLeft="8dp"
-            android:layout_width="0dp"
-            android:layout_weight="1.5"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:textSize="40sp"
+        android:textColor="@color/colorTitleBlack"
+        android:text="게시글 수정" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/postImage"
+        android:src="@mipmap/ic_launcher_round"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textColor="@color/colorTitleBlack"
         android:text="제목" />
 
@@ -64,7 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textColor="@color/colorTitleBlack"
         android:text="내용" />
 
@@ -72,31 +87,33 @@
         android:id="@+id/contentEdt"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
         android:background="@drawable/boder"
         android:inputType="text" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="@color/colorTitleBlack"
-        android:layout_gravity="center_vertical"
-        android:text="측정 결과" />
 
     <TextView
-        android:id="@+id/measuredValueText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:textColor="@color/colorTitleBlack"
+        android:text="측정값" />
+
+    <EditText
+        android:id="@+id/measuredValueText"
+        android:background="@drawable/boder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"
         android:layout_gravity="center_vertical"
         android:textColor="#000"
-        android:text="cm" />
+        android:text="" />
 
     <LinearLayout
         android:layout_width="match_parent"

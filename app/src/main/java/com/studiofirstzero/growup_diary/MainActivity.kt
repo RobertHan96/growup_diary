@@ -19,6 +19,7 @@ class MainActivity : BaseActivity() {
     var db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         checkNetworkConnection(mContext)

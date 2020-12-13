@@ -82,11 +82,13 @@ class PostEditActivity : BaseActivity() {
                 mPostData = this
                 Log.d("log", "게시글 정보 불러오기 성공 ${mPostData.toString()}")
                 val titleEditView = findViewById<EditText>(R.id.titleEdt)
+                val measuredValueEditView = findViewById<EditText>(R.id.measuredValueText)
                 val contentEditView = findViewById<EditText>(R.id.contentEdt)
                 val postImageView = findViewById<ImageView>(R.id.postImage)
                 titleEditView.setText(this.title)
                 contentEditView.setText(this.content)
                 Glide.with(mContext).load(this.imageUrl).override(300,300).into(postImageView)
+                measuredValueEditView.setText(this.measureValue?.toInt().toString())
             }
 
         }, {
@@ -108,7 +110,7 @@ class PostEditActivity : BaseActivity() {
     private fun isValidPost() : Boolean {
         val measuereValue = measuredValueText.text
         val title = titleEdt.text
-        val content = contentText.text
+        val content = findViewById<EditText>(R.id.contentEdt).text
         return measuereValue != null && title != null && content != null && postImage.drawable != null
     }
 
