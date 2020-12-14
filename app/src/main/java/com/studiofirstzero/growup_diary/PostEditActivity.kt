@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -17,16 +16,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
+import com.studiofirstzero.growup_diary.Utils.setOnSingleClickListener
 import com.studiofirstzero.growup_diary.datas.Post
-import kotlinx.android.synthetic.main.activity_post_detail.*
 import kotlinx.android.synthetic.main.activity_post_detail.measuredValueText
 import kotlinx.android.synthetic.main.activity_post_detail.postImage
 import kotlinx.android.synthetic.main.activity_post_edit.*
-import kotlinx.android.synthetic.main.activity_post_edit.openGalleryBtn
-import kotlinx.android.synthetic.main.activity_post_edit.titleEdt
-import kotlinx.android.synthetic.main.activity_write_diary.*
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,11 +42,14 @@ class PostEditActivity : BaseActivity() {
     }
 
     override fun setupEvents() {
-        editPostBtn.setOnClickListener {
+        editPostBtn.setOnSingleClickListener {
             if ( isValidPost() ) {
                 val postImage = findViewById<ImageView>(R.id.postImage)
                 uploadImageAndPost(postImage)
-                finish()
+
+                val timelineIntent: Intent = Intent(mContext, TimeLineActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                moveTaskToBack(true)
+                startActivity(timelineIntent)
             } else {
                 ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.InvaildPost)
             }

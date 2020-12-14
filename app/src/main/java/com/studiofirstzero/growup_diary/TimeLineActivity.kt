@@ -72,9 +72,11 @@ class TimeLineActivity : BaseActivity() {
                 mPostAdapter = PostAdapter(mContext, R.layout.post_list_item, mPosts)
                 getPosts()
 
+                mPostAdapter.notifyDataSetChanged()
                 postListView.adapter = mPostAdapter
                 Handler().postDelayed({
                     mPostAdapter.notifyDataSetChanged()
+                    postListView.emptyView = emptyPostNotifyText
 
                 }, 2000)
 

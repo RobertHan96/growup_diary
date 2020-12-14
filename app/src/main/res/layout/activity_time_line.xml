@@ -29,5 +29,19 @@
         android:divider="@color/colorTitleBlack"
         android:layout_height="match_parent"/>
 
+    <TextView
+        android:id="@+id/emptyPostNotifyText"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/colorTitleBlack"
+        android:textSize="18sp"
+        android:text="작성된 게시글이 없습니다."
+    />
+
 </LinearLayout>
+
+
 

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
+import com.studiofirstzero.growup_diary.Utils.setOnSingleClickListener
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import java.lang.Exception
@@ -40,7 +41,7 @@ class PostDetailActivity : BaseActivity() {
             }.show()
         }
 
-        postModifyBtn.setOnClickListener {
+        postModifyBtn.setOnSingleClickListener {
             val postEditActivity = Intent( mContext, PostEditActivity::class.java)
             postEditActivity.putExtra("postData", mPostData)
             postEditActivity.putExtra("postId", mPostId)

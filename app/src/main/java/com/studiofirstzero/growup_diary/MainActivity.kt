@@ -12,6 +12,7 @@ import android.widget.Toast.LENGTH_SHORT
 import com.google.firebase.firestore.FirebaseFirestore
 import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
+import com.studiofirstzero.growup_diary.Utils.setOnSingleClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -46,12 +47,12 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setupEvents() {
-        write_diary_btn.setOnClickListener {
+        write_diary_btn.setOnSingleClickListener {
             val writeDiary = Intent( mContext, WriteDiaryActivity::class.java)
             startActivity(writeDiary)
         }
 
-        grwonup_timeline_btn.setOnClickListener {
+        grwonup_timeline_btn.setOnSingleClickListener {
             db.collection("users")
                 .get()
                 .addOnCompleteListener { task ->
@@ -67,7 +68,7 @@ class MainActivity : BaseActivity() {
             startActivity(timeLine)
         }
 
-        mypageBtn.setOnClickListener {
+        mypageBtn.setOnSingleClickListener {
             val signUP = Intent( mContext, LoginActivity::class.java)
             startActivity(signUP)
         }

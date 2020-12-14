@@ -9,6 +9,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import app.akexorcist.bluetotohspp.library.BluetoothSPP
@@ -25,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.studiofirstzero.growup_diary.Utils.ConnectionStateMonitor
 import com.studiofirstzero.growup_diary.Utils.ErrorHandlerUtils
+import com.studiofirstzero.growup_diary.Utils.setOnSingleClickListener
 import com.studiofirstzero.growup_diary.datas.Post
 import kotlinx.android.synthetic.main.activity_write_diary.*
 import java.io.ByteArrayOutputStream
@@ -69,8 +71,7 @@ class WriteDiaryActivity : BaseActivity() {
     }
 
     override fun setupEvents() {
-
-        writePostBtn.setOnClickListener {
+        writePostBtn.setOnSingleClickListener {
             val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (connectivityManager.activeNetworkInfo.isConnected == true ) {
                 val currentUser = auth.currentUser
@@ -245,5 +246,5 @@ class WriteDiaryActivity : BaseActivity() {
             }
         finish()
     }
-}
 
+}
