@@ -46,10 +46,8 @@ class PostEditActivity : BaseActivity() {
             if ( isValidPost() ) {
                 val postImage = findViewById<ImageView>(R.id.postImage)
                 uploadImageAndPost(postImage)
+                finish()
 
-                val timelineIntent: Intent = Intent(mContext, TimeLineActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                moveTaskToBack(true)
-                startActivity(timelineIntent)
             } else {
                 ErrorHandlerUtils().toastError(mContext, ErrorHandlerUtils.MessageType.InvaildPost)
             }
